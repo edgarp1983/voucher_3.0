@@ -3,16 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#2563eb">
     <meta name="description" content="Sistema de Vouchers para Agência de Viagens">
-    <!-- PWA Meta Tags -->
     <link rel="icon" type="image/svg+xml" sizes="192x192" href="icon-192.svg">
     <link rel="icon" type="image/svg+xml" sizes="512x512" href="icon-512.svg">
     <link rel="apple-touch-icon" href="icon-192.svg">
     <title>Sistema de Vouchers - Agência de Viagens</title>
 
-    <!-- Font Awesome para icones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -24,13 +22,15 @@
             --text-secondary: #374151;
             --border-color: #e2e8f0;
             --primary-color: #4f46e5;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: #ffffff; /* Mudado para cor sólida */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* Melhora a renderização de fontes e bordas no celular */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -38,9 +38,12 @@
             line-height: 1.7;
             color: #374151;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-            min-height: 100vh;
+            /* FIX CRÍTICO: Mudado para 100dvh e fixed para evitar pulo da barra de endereço */
+            min-height: 100dvh;
+            background-attachment: fixed;
             font-weight: 400;
             font-size: 16px;
+            overflow-x: hidden;
         }
 
         /* Loading Screen */
@@ -50,7 +53,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            background: #f8fafc; /* Cor sólida */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -70,18 +73,13 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* App Container */
         .app-container {
-            min-height: 100vh;
+            min-height: 100dvh; /* Fix Vertical */
             display: flex;
             flex-direction: column;
             position: relative;
@@ -90,13 +88,14 @@
 
         /* Header */
         .app-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            background: #ffffff; /* Sólido */
+            /* Removido backdrop-filter */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #e2e8f0;
             position: sticky;
             top: 0;
             z-index: 100;
+            transform: translateZ(0); /* Camada GPU */
         }
 
         .header-content {
@@ -112,12 +111,8 @@
             color: #1f2937;
             font-size: 1.875rem;
             font-weight: 700;
-            text-shadow: none;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.025em;
+            /* Simplificado para evitar renderização pesada de texto */
+            color: #4f46e5; 
         }
 
         .app-header h1 i {
@@ -125,21 +120,19 @@
         }
 
         .config-btn {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            background: #4f46e5;
             color: white;
             border: none;
             padding: 0.875rem;
             border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: transform 0.2s ease, background 0.2s ease;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
         }
 
         .config-btn:hover {
-            background: #1d4ed8;
+            background: #4338ca;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         /* Main Content */
@@ -152,31 +145,24 @@
             position: relative;
         }
 
-        /* Screen Base Styles */
+        /* Screen Base Styles - OTIMIZADO */
         .screen {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff; /* Fundo Sólido */
             border-radius: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            /* Removido backdrop-filter */
             overflow: hidden;
-            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.4s ease-out; /* Animação mais rápida */
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .screen-header {
-            background: linear-gradient(135deg, #6366f1, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
             color: white;
             padding: 2rem;
             display: flex;
@@ -184,26 +170,12 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            overflow: hidden;
         }
 
         .screen-header h2 {
             font-size: 1.5rem;
             font-weight: 600;
-            text-shadow: none;
-            letter-spacing: -0.025em;
-        }
-
-        .screen-header h2 i {
-            margin-right: 0.5rem;
-        }
-
-        .screen-header p {
-            opacity: 0.9;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
         }
 
         /* Back Button */
@@ -214,17 +186,11 @@
             padding: 0.75rem;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
             width: 44px;
             height: 44px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateX(-2px);
         }
 
         /* Buttons */
@@ -234,131 +200,89 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 500;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             font-size: 0.875rem;
-            text-transform: none;
-            letter-spacing: 0;
-            position: relative;
-            overflow: hidden;
+            transform: translateZ(0); /* Performance */
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            background: #4f46e5;
             color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
         }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #4f46e5, #3730a3);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
-        }
+        .btn-primary:hover { background: #4338ca; }
 
         .btn-secondary {
-            background: linear-gradient(135deg, #64748b, #475569);
+            background: #64748b;
             color: white;
-            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.25);
-            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow: 0 4px 10px rgba(100, 116, 139, 0.2);
         }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #475569, #334155);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(100, 116, 139, 0.35);
-        }
+        .btn-secondary:hover { background: #475569; }
 
         .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: #10b981;
             color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
         }
-
-        .btn-success:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
-        }
+        .btn-success:hover { background: #059669; }
 
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: #ef4444;
             color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
         }
-
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
-        }
+        .btn-danger:hover { background: #dc2626; }
 
         .btn-info {
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #0ea5e9;
             color: white;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
-            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);
         }
-
-        .btn-info:hover {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.35);
-        }
+        .btn-info:hover { background: #0284c7; }
 
         /* Seção de navegação */
         .navigation-section {
             margin-top: 3rem;
             padding: 2.5rem;
-            background: rgba(255, 255, 255, 0.9);
+            background: #ffffff; /* Sólido */
             border-radius: 24px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            border: 1px solid #e2e8f0;
             text-align: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         .btn-large {
             padding: 1rem 2rem;
             font-size: 1rem;
-            font-weight: 500;
             min-width: 200px;
-            text-transform: none;
-            letter-spacing: 0;
         }
 
         .navigation-help {
             margin-top: 1.25rem;
             color: #6b7280;
             font-size: 0.95rem;
-            margin-bottom: 0;
-            line-height: 1.6;
         }
 
         /* Forms */
-        .config-form,
-        .voucher-form {
+        .config-form, .voucher-form {
             padding: 2rem;
         }
 
         /* Agencies Management */
-        .agencies-list-section {
+        .agencies-list-section, .add-agency-section, .form-section {
             margin-bottom: 2.5rem;
             padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
+            background: #ffffff; /* Sólido */
             border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            /* Removido backdrop-filter */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .agencies-list-section h3 {
+        .agencies-list-section h3, .add-agency-section h3, .form-section h3 {
             color: #1f2937;
             font-size: 1.125rem;
             font-weight: 600;
@@ -366,8 +290,6 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            text-transform: none;
-            letter-spacing: -0.025em;
         }
 
         .agencies-list {
@@ -376,21 +298,12 @@
         }
 
         .agency-item {
-            background: rgba(248, 250, 252, 0.8);
-            border: 1px solid rgba(226, 232, 240, 0.6);
+            background: #f8fafc; /* Cor sólida */
+            border: 1px solid #e2e8f0;
             border-radius: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
+            transition: none; /* Evita repintura complexa */
             display: flex;
             flex-direction: column;
-            padding: 0;
-            gap: 0;
-        }
-
-        .agency-item:hover {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: #c7d2fe;
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.1);
         }
 
         .agency-item-header {
@@ -399,12 +312,6 @@
             align-items: center;
             padding: 1.5rem;
             width: 100%;
-        }
-
-        .agency-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
         }
 
         .agency-name {
@@ -428,7 +335,7 @@
             border-top: 1px solid #e2e8f0;
             width: 100%;
             padding: 0.75rem 1.5rem;
-            background: #fdfdff;
+            background: #fff;
         }
 
         .template-item {
@@ -439,9 +346,7 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        .template-item:last-child {
-            border-bottom: none;
-        }
+        .template-item:last-child { border-bottom: none; }
 
         .template-name {
             font-size: 0.9rem;
@@ -452,9 +357,7 @@
             gap: 0.5rem;
         }
 
-        .template-name .fa-file-pdf {
-            color: #dc2626;
-        }
+        .template-name .fa-file-pdf { color: #dc2626; }
 
         .remove-template-btn {
             background: transparent;
@@ -469,64 +372,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
         }
 
-        .remove-template-btn:hover {
-            background-color: #fee2e2;
-        }
+        .remove-template-btn:hover { background-color: #fee2e2; }
 
-        .add-agency-section {
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .add-agency-section h3 {
-            color: #1f2937;
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .empty-agencies {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-            font-style: italic;
-        }
-
-        /* Seções de formulário */
-        .form-section {
-            margin-bottom: 2.5rem;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .form-section:last-of-type {
-            margin-bottom: 0;
-        }
-
-        .form-section h3 {
-            margin: 0 0 1.5rem 0;
-            color: #1f2937;
-            font-size: 1.125rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-transform: none;
-            letter-spacing: -0.025em;
-        }
-
+        /* Inputs */
         .form-group {
             margin-bottom: 1.5rem;
             display: flex;
@@ -534,10 +384,6 @@
             gap: 0.5rem;
             flex: 1;
             min-width: 0;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
         }
 
         .form-row {
@@ -549,26 +395,21 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.25rem;
             font-weight: 500;
             color: #374151;
             font-size: 0.875rem;
-            text-transform: none;
-            letter-spacing: 0;
         }
 
-        .form-input,
-        .form-textarea,
-        .form-select {
+        .form-input, .form-textarea, .form-select {
             width: 100%;
             padding: 0.875rem 1rem;
-            border: 1px solid rgba(209, 213, 219, 0.8);
+            border: 1px solid #d1d5db;
             border-radius: 12px;
             font-size: 0.95rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.9);
+            /* FIX: Cor sólida para performance e evita repintura */
+            background: #f9fafb;
             color: #374151;
-            backdrop-filter: blur(10px);
+            transform: translateZ(0); /* Camada própria */
         }
 
         .form-select {
@@ -582,12 +423,11 @@
             -webkit-appearance: none;
         }
 
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: #fff;
         }
 
         .form-textarea {
@@ -601,12 +441,6 @@
             border-radius: 12px;
             background: #f9fafb;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-input:hover {
-            border-color: #6366f1;
-            background: #eff6ff;
         }
 
         .template-status {
@@ -615,36 +449,11 @@
             border-radius: 6px;
             font-size: 14px;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .template-status.loading {
-            background-color: #e3f2fd;
-            color: #1976d2;
-            border: 1px solid #bbdefb;
-        }
-
-        .template-status.success {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
-        }
-
-        .template-status.error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
-        }
-
-        .form-help {
-            display: block;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #666;
-            font-style: italic;
-        }
+        .template-status.loading { background-color: #e3f2fd; color: #1976d2; }
+        .template-status.success { background-color: #e8f5e9; color: #2e7d32; }
+        .template-status.error { background-color: #ffebee; color: #c62828; }
 
         .total-field {
             background: #f3f4f6 !important;
@@ -664,9 +473,7 @@
             color: var(--text-secondary);
         }
 
-        .destinations-container {
-            margin-bottom: 1rem;
-        }
+        .destinations-container { margin-bottom: 1rem; }
 
         .destination-row {
             display: grid;
@@ -675,15 +482,15 @@
             align-items: end;
             margin-bottom: 1rem;
             padding: 1rem;
-            background: #f8fafc;
+            /* FIX: Performance */
+            background: #ffffff;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             align-items: center;
+            transform: translateZ(0);
         }
 
-        .destination-row .form-group {
-            margin-bottom: 0;
-        }
+        .destination-row .form-group { margin-bottom: 0; }
 
         .remove-destination-btn {
             background: #fecaca;
@@ -694,22 +501,13 @@
             padding: 0;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .remove-destination-btn:hover {
-            background-color: #dc2626;
-            color: white;
-            transform: scale(1.05);
-        }
-
         /* Passengers */
-        .passengers-container {
-            margin-bottom: 1.5rem;
-        }
+        .passengers-container { margin-bottom: 1.5rem; }
 
         .passenger-row {
             display: flex;
@@ -717,9 +515,11 @@
             gap: 1rem;
             margin-bottom: 1rem;
             padding: 1rem;
-            background: #f8fafc;
+            /* FIX: Performance */
+            background: #ffffff;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
+            transform: translateZ(0); /* Aceleração de hardware */
         }
 
         .passenger-row label {
@@ -729,9 +529,7 @@
             margin-bottom: 0;
         }
 
-        .passenger-row input {
-            flex: 1;
-        }
+        .passenger-row input { flex: 1; }
 
         .remove-passenger-btn {
             min-width: 40px;
@@ -741,18 +539,13 @@
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .remove-passenger-btn:hover {
-            background-color: #dc2626;
-            transform: scale(1.05);
+            background-color: #fee2e2;
+            border: none;
+            color: #dc2626;
         }
 
         /* Vouchers List */
-        .vouchers-list-container {
-            padding: 2rem;
-        }
+        .vouchers-list-container { padding: 2rem; }
 
         .voucher-item {
             background: white;
@@ -760,14 +553,8 @@
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .voucher-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-color: #c7d2fe;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transform: translateZ(0);
         }
 
         .voucher-header {
@@ -782,7 +569,7 @@
         .voucher-title {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #3730a3;
+            color: #4338ca;
             margin-bottom: 0.25rem;
         }
 
@@ -791,15 +578,8 @@
             font-size: 0.875rem;
         }
 
-        .voucher-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .voucher-actions .btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
+        .voucher-actions { display: flex; gap: 0.5rem; }
+        .voucher-actions .btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
 
         .voucher-info {
             display: grid;
@@ -810,11 +590,7 @@
             border-top: 1px solid #f3f4f6;
         }
 
-        .voucher-info-item {
-            display: flex;
-            flex-direction: column;
-        }
-
+        .voucher-info-item { display: flex; flex-direction: column; }
         .voucher-info-label {
             font-size: 0.8rem;
             color: #6b7280;
@@ -822,11 +598,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-
-        .voucher-info-value {
-            font-weight: 600;
-            color: #374151;
-        }
+        .voucher-info-value { font-weight: 600; color: #374151; }
 
         /* Empty State */
         .empty-state {
@@ -834,19 +606,8 @@
             padding: 4rem 2rem;
             color: #6b7280;
         }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-            color: #9ca3af;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #374151;
-        }
+        .empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; color: #9ca3af; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #374151; }
 
         /* Form Actions */
         .form-actions {
@@ -876,36 +637,14 @@
             padding: 0.75rem 1rem;
             cursor: pointer;
             border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s ease;
             min-height: 44px;
             display: flex;
             align-items: center;
         }
 
-        .autocomplete-suggestion:hover,
-        .autocomplete-suggestion.selected {
+        .autocomplete-suggestion:hover, .autocomplete-suggestion.selected {
             background: #eff6ff;
             color: #2563eb;
-        }
-
-        .autocomplete-suggestion:last-child {
-            border-bottom: none;
-        }
-
-        @media (max-width: 768px) {
-            .autocomplete-suggestions {
-                max-height: 250px;
-                border-radius: 8px;
-                left: 0 !important;
-                right: 0 !important;
-                width: auto !important;
-            }
-
-            .autocomplete-suggestion {
-                padding: 1rem;
-                min-height: 48px;
-                font-size: 16px;
-            }
         }
 
         /* Phone Input Styles */
@@ -947,10 +686,7 @@
             padding: 0.875rem 1rem;
             font-size: 0.95rem;
             color: #374151;
-            cursor: text;
-            transition: all 0.3s ease;
             width: 100%;
-            box-sizing: border-box;
             font-weight: 500;
         }
 
@@ -967,34 +703,6 @@
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: none;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        @media (max-width: 768px) {
-            .country-dropdown {
-                max-height: 300px;
-                border-radius: 8px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            }
-        }
-
-        .country-dropdown::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .country-dropdown::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
-        }
-
-        .country-dropdown::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-            transition: background-color 0.2s ease;
-        }
-
-        .country-dropdown::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
         }
 
         .country-dropdown-item {
@@ -1004,53 +712,17 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s ease;
             font-size: 0.875rem;
         }
 
-        .country-dropdown-item:hover {
-            background-color: #eff6ff;
-        }
+        .country-dropdown-item:hover { background-color: #eff6ff; }
 
-        .country-dropdown-item:last-child {
-            border-bottom: none;
-        }
+        .phone-input { flex: 1; min-width: 0; }
+        .phone-input.valid { border-color: #10b981; }
+        .phone-input.warning { border-color: #f59e0b; }
+        .phone-input.error { border-color: #ef4444; }
 
-        .country-name {
-            font-weight: 500;
-            color: #374151;
-        }
-
-        .country-code {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
-        }
-
-        .country-input:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .phone-input {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .phone-input.valid {
-            border-color: #10b981;
-        }
-
-        .phone-input.warning {
-            border-color: #f59e0b;
-        }
-
-        .phone-input.error {
-            border-color: #ef4444;
-        }
-
-        /* Contractor Header Styles */
+        /* Contractor Header Styles & Fix Flickering */
         .contractor-header {
             display: flex;
             justify-content: space-between;
@@ -1060,20 +732,19 @@
             gap: 1rem;
         }
 
-        .contractor-header h3 {
-            margin: 0;
-        }
+        .contractor-header h3 { margin: 0; }
 
         .contractor-fields {
-            transition: all 0.5s ease-in-out;
+            /* FIX: Animação simplificada para evitar tremedeira */
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+            will-change: opacity, max-height;
             max-height: 0;
             overflow: hidden;
             opacity: 0;
         }
 
         .contractor-fields.show {
-            max-height: 1000px;
-            /* Adjust as needed */
+            max-height: 1500px; /* Valor seguro */
             opacity: 1;
         }
 
@@ -1081,11 +752,6 @@
             background: #f1f5f9;
             color: #475569;
             border: 1px solid #e2e8f0;
-        }
-
-        #toggle-contractor-btn:hover {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
         }
 
         .checkbox-group {
@@ -1131,438 +797,94 @@
             animation: slideInRight 0.5s ease-out;
         }
 
-        .message-success {
-            background: #10b981;
-        }
-
-        .message-error {
-            background: #ef4444;
-        }
+        .message-success { background: #10b981; }
+        .message-error { background: #ef4444; }
 
         @keyframes slideInRight {
-            from {
-                transform: translateX(110%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(110%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateX(110%);
-                opacity: 0;
-            }
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(110%); opacity: 0; }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .destination-header {
-                display: none;
-            }
-            .main-content {
-                padding: 1rem;
-            }
-
-            .header-content {
-                padding: 1rem 1.5rem;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                gap: 1rem;
-                text-align: left;
-                flex-wrap: wrap;
-            }
-
-            .app-header h1 {
-                font-size: 1.4rem;
-                flex: 1;
-                min-width: 200px;
-            }
-
-            .config-btn {
-                padding: 0.75rem;
-                min-width: 44px;
-                min-height: 44px;
-                flex-shrink: 0;
-            }
-
-            .screen {
-                border-radius: 16px;
-                margin: 0;
-            }
-
-            .screen-header {
-                padding: 1.5rem;
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: left;
-            }
-
-            .config-form,
-            .voucher-form {
-                padding: 1.5rem;
-            }
-
-            .form-section {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .destination-row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 1.25rem;
-            }
-
-            .passenger-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-                padding: 1.25rem;
-            }
-
-            .passenger-row label {
-                min-width: auto;
-                text-align: left;
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .phone-input-group {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .country-input-container {
-                width: 100%;
-                max-width: 160px;
-            }
-
-            .passenger-phones-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .voucher-info {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .checkbox-group {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-                padding: 1.25rem;
-            }
-
-            .agencies-list {
-                gap: 1rem;
-            }
-
-            .agency-item {
-                margin-bottom: 1rem;
-            }
-
-            .agency-item-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-                padding: 1.25rem;
-            }
-
-            .agency-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 0.75rem;
-            }
-
-            .templates-list {
-                padding: 1rem 1.25rem;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .template-item {
-                padding: 1rem 0;
-                min-width: 280px;
-            }
-
-            .voucher-item {
-                padding: 1.25rem;
-                margin-bottom: 1.25rem;
-            }
-
-            .voucher-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-                margin-bottom: 1.25rem;
-            }
-
-            .voucher-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 0.75rem;
-            }
-
-            .form-actions {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
-            }
-
-            .form-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .navigation-section {
-                padding: 1.5rem;
-                margin-top: 2rem;
-            }
-
-            .btn-large {
-                width: 100%;
-                padding: 1.25rem 2rem;
-            }
+            .destination-header { display: none; }
+            .main-content { padding: 1rem; }
+            .header-content { padding: 1rem 1.5rem; flex-direction: row; gap: 1rem; flex-wrap: wrap; }
+            .app-header h1 { font-size: 1.4rem; flex: 1; min-width: 200px; }
+            .config-btn { padding: 0.75rem; min-width: 44px; min-height: 44px; flex-shrink: 0; }
+            .screen { border-radius: 16px; margin: 0; }
+            .screen-header { padding: 1.5rem; flex-direction: column; align-items: flex-start; }
+            .config-form, .voucher-form, .form-section { padding: 1.5rem; margin-bottom: 1.5rem; }
+            .form-row { grid-template-columns: 1fr; gap: 1rem; }
+            .destination-row { grid-template-columns: 1fr; gap: 1rem; padding: 1.25rem; }
+            .passenger-row { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1.25rem; }
+            .passenger-row label { min-width: auto; margin-bottom: 0.5rem; }
+            .phone-input-group { flex-direction: column; gap: 0.75rem; }
+            .country-input-container { width: 100%; max-width: 160px; }
+            .passenger-phones-container { grid-template-columns: 1fr; gap: 1.5rem; }
+            .voucher-info { grid-template-columns: 1fr; gap: 1rem; }
+            .checkbox-group { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.25rem; }
+            .agencies-list { gap: 1rem; }
+            .agency-item-header { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1.25rem; }
+            .agency-actions { justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+            .templates-list { padding: 1rem 1.25rem; overflow-x: auto; }
+            .voucher-header { flex-direction: column; align-items: stretch; gap: 1rem; margin-bottom: 1.25rem; }
+            .voucher-actions { justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+            .form-actions { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+            .form-actions .btn { width: 100%; }
+            .navigation-section { padding: 1.5rem; margin-top: 2rem; }
+            .btn-large { width: 100%; padding: 1.25rem 2rem; }
         }
 
         @media (max-width: 480px) {
-            .main-content {
-                padding: 0.5rem;
-            }
-
-            .header-content {
-                padding: 0.75rem 0.5rem;
-            }
-
-            .app-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .btn {
-                padding: 1rem 1.5rem;
-                font-size: 0.9rem;
-                min-height: 48px;
-                min-width: 120px;
-                border-radius: 8px;
-            }
-
-            .btn-small {
-                padding: 0.75rem 1rem;
-                font-size: 0.85rem;
-                min-height: 44px;
-                min-width: 100px;
-            }
-
-            .back-btn {
-                min-width: 48px;
-                min-height: 48px;
-                padding: 1rem;
-            }
-
-            .config-btn {
-                min-width: 48px;
-                min-height: 48px;
-            }
-
-            .config-form,
-            .voucher-form,
-            .form-section {
-                padding: 1rem;
-            }
-
-            .screen-header {
-                padding: 1rem;
-            }
-
-            .screen-header h2 {
-                font-size: 1.25rem;
-            }
-
-            .form-input,
-            .form-textarea,
-            .form-select {
-                padding: 1rem;
-                font-size: 16px !important;
-                /* Evita zoom no iOS */
-                min-height: 48px;
-                border-radius: 8px;
-            }
-
-            .form-textarea {
-                min-height: 120px;
-                padding: 1rem;
-            }
-
-            .phone-input {
-                font-size: 16px !important;
-                /* Evita zoom no iOS */
-                min-height: 48px;
-                padding: 1rem;
-            }
-
-            .country-input {
-                font-size: 16px !important;
-                /* Evita zoom no iOS */
-                padding: 1rem 0.75rem;
-                min-height: 48px;
-            }
-
-            .form-select {
-                padding-right: 3rem;
-                background-size: 1.5em;
-                background-position: right 1rem center;
-            }
-
-            .passenger-row {
-                padding: 0.75rem;
-            }
-
-            .destination-row {
-                padding: 0.75rem;
-                grid-template-columns: 1fr 100px 80px 40px;
-            }
-
-            .remove-passenger-btn,
-            .remove-destination-btn {
-                min-width: 44px;
-                min-height: 44px;
-            }
-
-            .navigation-section {
-                padding: 1rem;
-            }
-
-            .voucher-item {
-                padding: 1rem;
-            }
-
-            .voucher-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
-            }
-
-            .voucher-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
+            .main-content { padding: 0.5rem; }
+            .header-content { padding: 0.75rem 0.5rem; }
+            .app-header h1 { font-size: 1.25rem; }
+            .btn { padding: 1rem 1.5rem; font-size: 0.9rem; min-height: 48px; min-width: 120px; }
+            .btn-small { padding: 0.75rem 1rem; font-size: 0.85rem; min-height: 44px; min-width: 100px; }
+            .back-btn { min-width: 48px; min-height: 48px; padding: 1rem; }
+            .config-btn { min-width: 48px; min-height: 48px; }
+            .config-form, .voucher-form, .form-section { padding: 1rem; }
+            .screen-header { padding: 1rem; }
+            .screen-header h2 { font-size: 1.25rem; }
+            .form-input, .form-textarea, .form-select { padding: 1rem; font-size: 16px !important; min-height: 48px; }
+            .form-textarea { min-height: 120px; padding: 1rem; }
+            .phone-input, .country-input { font-size: 16px !important; min-height: 48px; padding: 1rem; }
+            .form-select { padding-right: 3rem; }
+            .passenger-row, .destination-row { padding: 0.75rem; }
+            .remove-passenger-btn, .remove-destination-btn { min-width: 44px; min-height: 44px; }
+            .navigation-section { padding: 1rem; }
+            .voucher-item { padding: 1rem; }
+            .destination-row { grid-template-columns: 1fr; gap: 0.5rem; }
+            .destination-row .form-group { margin-bottom: 0.75rem; }
+            .remove-destination-btn { justify-self: center; margin-top: 0.5rem; }
         }
 
-        /* Media query para telas muito pequenas */
-        @media (max-width: 480px) {
-            .destination-row {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
-
-            .destination-row .form-group {
-                margin-bottom: 0.75rem;
-            }
-
-            .remove-destination-btn {
-                justify-self: center;
-                margin-top: 0.5rem;
-            }
-        }
-
-        /* Melhorias específicas para touch */
-        @media (hover: none) and (pointer: coarse) {
-            .btn {
-                min-height: 48px;
-                padding: 1rem 1.5rem;
-                touch-action: manipulation;
-            }
-
-            .form-input,
-            .form-select,
-            .form-textarea {
-                min-height: 48px;
-                touch-action: manipulation;
-            }
-
-            .country-dropdown-item {
-                min-height: 48px;
-                padding: 1rem;
-                touch-action: manipulation;
-            }
-
-            .remove-passenger-btn,
-            .remove-destination-btn {
-                min-width: 48px;
-                min-height: 48px;
-                touch-action: manipulation;
-            }
-        }
-
-        /* Melhorias específicas para iOS */
+        /* iOS and Touch Improvements */
         @supports (-webkit-touch-callout: none) {
-            .form-input,
-            .form-select,
-            .form-textarea,
-            .phone-input,
-            .country-input {
+            .form-input, .form-select, .form-textarea, .phone-input, .country-input {
                 font-size: 16px !important;
                 -webkit-appearance: none;
-                border-radius: 8px;
+                border-radius: 12px;
             }
-
-            .form-select {
-                -webkit-appearance: none;
-                appearance: none;
-            }
-
-            body {
-                -webkit-text-size-adjust: 100%;
-                -webkit-font-smoothing: antialiased;
-            }
-
-            .screen,
-            .form-section {
-                -webkit-overflow-scrolling: touch;
-            }
-        }
-
-        /* Prevenção de zoom em dispositivos móveis */
-        @media screen and (max-width: 768px) {
-            input[type="text"],
-            input[type="email"],
-            input[type="tel"],
-            input[type="number"],
-            input[type="date"],
-            select,
-            textarea {
-                font-size: 16px !important;
-                transform: translateZ(0);
-            }
+            body { -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
+            .screen, .form-section { -webkit-overflow-scrolling: touch; }
         }
     </style>
 </head>
 
 <body>
-    <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-spinner"></div>
-        <p>Carregando Sistema de Vouchers...</p>
+        <p>Carregando Sistema...</p>
     </div>
 
-    <!-- App Container -->
     <div id="app" class="app-container" style="display: none;">
-        <!-- Header -->
         <header class="app-header">
             <div class="header-content">
                 <h1><i class="fas fa-plane"></i> Sistema de Vouchers</h1>
@@ -1572,9 +894,7 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Tela de Configuração Inicial -->
             <section id="config-screen" class="screen config-screen" style="display: none;">
                 <div class="screen-header">
                     <div>
@@ -1584,23 +904,19 @@
                 </div>
 
                 <div class="config-form">
-                    <!-- Lista de Agências Cadastradas -->
                     <div class="agencies-list-section">
                         <h3><i class="fas fa-list"></i> Agências Cadastradas</h3>
                         <div id="agencies-list" class="agencies-list">
-                            <!-- Agências serão carregadas aqui dinamicamente -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- Formulário para Adicionar Nova Agência -->
                     <div class="add-agency-section">
                         <h3><i class="fas fa-plus-circle"></i> Adicionar Template</h3>
                         <form id="agency-config-form">
                             <div class="form-group">
                                 <label for="agency-select-for-template">Para a Agência *</label>
                                 <select id="agency-select-for-template" class="form-select" required>
-                                    <!-- Populated by JS -->
-                                </select>
+                                    </select>
                             </div>
                             <div class="form-group" id="new-agency-name-group" style="display: none;">
                                 <label for="new-agency-name">Nome da Nova Agência *</label>
@@ -1620,7 +936,6 @@
                         </form>
                     </div>
 
-                    <!-- Botão para ir para os vouchers -->
                     <div class="navigation-section">
                         <button id="go-to-vouchers-btn" class="btn btn-success btn-large">
                             <i class="fas fa-arrow-right"></i> Continuar para Vouchers
@@ -1630,7 +945,6 @@
                 </div>
             </section>
 
-            <!-- Tela Principal Lista de Vouchers -->
             <section id="vouchers-list-screen" class="screen vouchers-list-screen">
                 <div class="screen-header">
                     <h2><i class="fas fa-ticket-alt"></i> Meus Vouchers</h2>
@@ -1640,8 +954,7 @@
                 </div>
                 <div class="vouchers-list-container">
                     <div id="vouchers-list" class="vouchers-list">
-                        <!-- Lista de vouchers será carregada aqui -->
-                    </div>
+                        </div>
                     <div id="empty-state" class="empty-state" style="display: none;">
                         <i class="fas fa-ticket-alt"></i>
                         <h3>Nenhum voucher criado ainda</h3>
@@ -1650,18 +963,15 @@
                 </div>
             </section>
 
-            <!-- Tela de Criação/Edição de Voucher -->
             <section id="voucher-form-screen" class="screen voucher-form-screen" style="display: none;">
                 <div class="screen-header">
                     <button id="back-to-list-btn" class="back-btn">
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <h2 id="voucher-form-title"><i class="fas fa-plus"></i> Novo Voucher</h2>
-                    <div></div> <!-- Spacer -->
-                </div>
+                    <div></div> </div>
 
                 <form id="voucher-form" class="voucher-form">
-                    <!-- Seção 0: Seleção de Agência e Template -->
                     <div class="form-section">
                         <h3><i class="fas fa-building"></i> Agência e Template</h3>
                         <div class="form-row">
@@ -1669,20 +979,17 @@
                                 <label for="selected-agency">Selecione a Agência *</label>
                                 <select id="selected-agency" class="form-select" required>
                                     <option value="">Selecione uma agência...</option>
-                                    <!-- Opções serão carregadas dinamicamente -->
-                                </select>
+                                    </select>
                             </div>
                             <div class="form-group">
                                 <label for="selected-template">Selecione o Template *</label>
                                 <select id="selected-template" class="form-select" required>
                                     <option value="">Primeiro selecione uma agência...</option>
-                                    <!-- Opções serão carregadas dinamicamente -->
-                                </select>
+                                    </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Seção 1: Destinos -->
                     <div class="form-section">
                         <h3><i class="fas fa-map-marker-alt"></i> Roteiro</h3>
                         <div class="destination-header">
@@ -1691,14 +998,12 @@
                             <label>Horário</label>
                         </div>
                         <div id="destinations-container" class="destinations-container">
-                            <!-- Destinos serão adicionados dinamicamente aqui -->
-                        </div>
+                            </div>
                         <button type="button" id="add-destination-btn" class="btn btn-secondary" style="margin-top: 1rem;">
                             <i class="fas fa-plus"></i> Adicionar Destino
                         </button>
                     </div>
 
-                    <!-- Seção 2: Embarque e Passageiros -->
                     <div class="form-section">
                         <h3><i class="fas fa-users"></i> Dados da Viagem</h3>
                         <div class="form-group">
@@ -1708,20 +1013,16 @@
 
                         <h4>Lista de Passageiros</h4>
                         <div id="passengers-container" class="passengers-container">
-                            <!-- Passageiros serão adicionados dinamicamente aqui -->
-                        </div>
+                            </div>
                         <button type="button" id="add-passenger-btn" class="btn btn-secondary">
                             <i class="fas fa-plus"></i> Adicionar Passageiro
                         </button>
 
                         <h4 style="margin-top: 1.5rem;">Contato dos Passageiros</h4>
-                        <!-- Telefones dos Passageiros -->
                         <div class="passenger-phones-container">
-                            <!-- JS vai gerar os campos aqui para contato_01 e contato_02 -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- Seção 3: Quantidade de Passageiros -->
                     <div class="form-section">
                         <h3><i class="fas fa-calculator"></i> Quantitativos</h3>
                         <div class="form-row">
@@ -1744,7 +1045,6 @@
                         </div>
                     </div>
 
-                    <!-- Seção 4: Financeiro e Observações -->
                     <div class="form-section">
                         <h3><i class="fas fa-dollar-sign"></i> Financeiro e Observações</h3>
                         <div class="form-row">
@@ -1767,7 +1067,6 @@
                         </div>
                     </div>
 
-                    <!-- Seção 5: Dados do Contratante -->
                     <div class="form-section">
                         <div class="contractor-header">
                             <h3><i class="fas fa-user-tie"></i> Dados do Contratante</h3>
@@ -1804,7 +1103,6 @@
                         </div>
                     </div>
 
-                    <!-- Ações de Formulário -->
                     <div class="form-actions">
                         <button type="button" id="preview-pdf-btn" class="btn btn-secondary">
                             <i class="fas fa-eye"></i> Visualizar PDF
@@ -1818,15 +1116,13 @@
         </main>
     </div>
 
-    <!-- Autocomplete Suggestions -->
     <div id="autocomplete-suggestions" class="autocomplete-suggestions"></div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/libphonenumber-js@1.11.4/bundle/libphonenumber-js.min.js"></script>
 
     <script>
-        // Dados dos países, que estariam em 'countries_data.js'
+        // Dados dos países
         window.COUNTRIES_DATA = [
             // América do Sul
             { code: 'BR', name: 'Brasil', dialCode: '55' },
@@ -1842,82 +1138,17 @@
             { code: 'GY', name: 'Guiana', dialCode: '592' },
             { code: 'SR', name: 'Suriname', dialCode: '597' },
             { code: 'GF', name: 'Guiana Francesa', dialCode: '594' },
-
             // América do Norte
             { code: 'US', name: 'Estados Unidos', dialCode: '1' },
             { code: 'CA', name: 'Canadá', dialCode: '1' },
             { code: 'MX', name: 'México', dialCode: '52' },
-
-            // América Central e Caribe
-            { code: 'GT', name: 'Guatemala', dialCode: '502' },
-            { code: 'BZ', name: 'Belize', dialCode: '501' },
-            { code: 'SV', name: 'El Salvador', dialCode: '503' },
-            { code: 'HN', name: 'Honduras', dialCode: '504' },
-            { code: 'NI', name: 'Nicarágua', dialCode: '505' },
-            { code: 'CR', name: 'Costa Rica', dialCode: '506' },
-            { code: 'PA', name: 'Panamá', dialCode: '507' },
-            { code: 'CU', name: 'Cuba', dialCode: '53' },
-            { code: 'JM', name: 'Jamaica', dialCode: '1876' },
-            { code: 'HT', name: 'Haiti', dialCode: '509' },
-            { code: 'DO', name: 'República Dominicana', dialCode: '1809' },
-
             // Europa
             { code: 'PT', name: 'Portugal', dialCode: '351' },
             { code: 'ES', name: 'Espanha', dialCode: '34' },
             { code: 'FR', name: 'França', dialCode: '33' },
             { code: 'IT', name: 'Itália', dialCode: '39' },
             { code: 'DE', name: 'Alemanha', dialCode: '49' },
-            { code: 'GB', name: 'Reino Unido', dialCode: '44' },
-            { code: 'IE', name: 'Irlanda', dialCode: '353' },
-            { code: 'NL', name: 'Holanda', dialCode: '31' },
-            { code: 'BE', name: 'Bélgica', dialCode: '32' },
-            { code: 'CH', name: 'Suíça', dialCode: '41' },
-            { code: 'AT', name: 'Áustria', dialCode: '43' },
-            { code: 'SE', name: 'Suécia', dialCode: '46' },
-            { code: 'NO', name: 'Noruega', dialCode: '47' },
-            { code: 'DK', name: 'Dinamarca', dialCode: '45' },
-            { code: 'FI', name: 'Finlândia', dialCode: '358' },
-            { code: 'IS', name: 'Islândia', dialCode: '354' },
-            { code: 'PL', name: 'Polônia', dialCode: '48' },
-            { code: 'CZ', name: 'República Tcheca', dialCode: '420' },
-            { code: 'SK', name: 'Eslováquia', dialCode: '421' },
-            { code: 'HU', name: 'Hungria', dialCode: '36' },
-            { code: 'RO', name: 'Romênia', dialCode: '40' },
-            { code: 'BG', name: 'Bulgária', dialCode: '359' },
-            { code: 'HR', name: 'Croácia', dialCode: '385' },
-            { code: 'SI', name: 'Eslovênia', dialCode: '386' },
-            { code: 'GR', name: 'Grécia', dialCode: '30' },
-            { code: 'TR', name: 'Turquia', dialCode: '90' },
-            { code: 'RU', name: 'Rússia', dialCode: '7' },
-            { code: 'UA', name: 'Ucrânia', dialCode: '380' },
-
-            // Ásia
-            { code: 'JP', name: 'Japão', dialCode: '81' },
-            { code: 'CN', name: 'China', dialCode: '86' },
-            { code: 'KR', name: 'Coreia do Sul', dialCode: '82' },
-            { code: 'IN', name: 'Índia', dialCode: '91' },
-            { code: 'TH', name: 'Tailândia', dialCode: '66' },
-            { code: 'VN', name: 'Vietnã', dialCode: '84' },
-            { code: 'PH', name: 'Filipinas', dialCode: '63' },
-            { code: 'MY', name: 'Malásia', dialCode: '60' },
-            { code: 'SG', name: 'Singapura', dialCode: '65' },
-            { code: 'ID', name: 'Indonésia', dialCode: '62' },
-            { code: 'IL', name: 'Israel', dialCode: '972' },
-            { code: 'AE', name: 'Emirados Árabes Unidos', dialCode: '971' },
-            { code: 'SA', name: 'Arábia Saudita', dialCode: '966' },
-
-            // África
-            { code: 'ZA', name: 'África do Sul', dialCode: '27' },
-            { code: 'EG', name: 'Egito', dialCode: '20' },
-            { code: 'MA', name: 'Marrocos', dialCode: '212' },
-            { code: 'NG', name: 'Nigéria', dialCode: '234' },
-            { code: 'KE', name: 'Quênia', dialCode: '254' },
-            { code: 'GH', name: 'Gana', dialCode: '233' },
-
-            // Oceania
-            { code: 'AU', name: 'Austrália', dialCode: '61' },
-            { code: 'NZ', name: 'Nova Zelândia', dialCode: '64' },
-            { code: 'FJ', name: 'Fiji', dialCode: '679' }
+            { code: 'GB', name: 'Reino Unido', dialCode: '44' }
         ];
     </script>
 
@@ -1932,11 +1163,7 @@
             }
 
             getCountriesData() {
-                return window.COUNTRIES_DATA || [{
-                    code: 'BR',
-                    name: 'Brasil',
-                    dialCode: '55'
-                }];
+                return window.COUNTRIES_DATA || [{ code: 'BR', name: 'Brasil', dialCode: '55' }];
             }
 
             init() {
@@ -1946,7 +1173,6 @@
                 this.setupFormCalculations();
             }
 
-            // NEW HELPERS for phone numbers
             getCombinedPhoneNumber(inputId) {
                 const phoneInput = document.getElementById(inputId);
                 if (!phoneInput) return '';
@@ -1964,7 +1190,6 @@
                 }
                 const trimmed = fullNumber.trim();
                 const parts = trimmed.split(' ');
-                // If it's just a DDI (e.g., '+55' or '+55 '), number should be empty
                 if (parts.length === 1 && parts[0].startsWith('+')) {
                     return { ddi: parts[0], number: '' };
                 }
@@ -1979,13 +1204,10 @@
             populatePhoneField(inputId, fullNumber) {
                 const phoneInput = document.getElementById(inputId);
                 if (!phoneInput) return;
-
                 const { ddi, number } = this.parsePhoneNumber(fullNumber);
-
                 phoneInput.value = number;
                 const group = phoneInput.closest('.phone-input-group');
                 const countryInput = group.querySelector('.country-input');
-
                 if (countryInput) {
                     countryInput.value = ddi || '+55';
                     const country = this.countriesData.find(c => `+${c.dialCode}` === countryInput.value) || this.countriesData.find(c => c.code === 'BR');
@@ -1995,7 +1217,6 @@
                     }
                 }
             }
-
 
             loadApp() {
                 setTimeout(() => {
@@ -2034,92 +1255,60 @@
                 });
                 document.getElementById('observacao').addEventListener('input', this.handleObservacaoInput.bind(this));
                 const today = new Date();
-                const todayISO = today.getFullYear() + '-' +
-                    String(today.getMonth() + 1).padStart(2, '0') + '-' +
-                    String(today.getDate()).padStart(2, '0');
+                const todayISO = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
                 document.getElementById('data_contrato').value = todayISO;
             }
 
             handleObservacaoInput(e) {
                 const textarea = e.target;
                 const maxCharsPerLine = 120;
-                
-                // A propriedade maxlength="600" já cuida do limite total.
-                // Esta função cuidará do limite por linha.
-                
                 const value = textarea.value;
                 const lines = value.split('\n');
-
                 const newLines = lines.map(line => {
                     return line.substring(0, maxCharsPerLine);
                 });
-
                 const finalValue = newLines.join('\n');
-
                 if (textarea.value !== finalValue) {
                     const selectionStart = textarea.selectionStart;
                     const selectionEnd = textarea.selectionEnd;
-                    
                     textarea.value = finalValue;
-
-                    // Tenta restaurar a posição do cursor.
-                    textarea.setSelectionRange(
-                        Math.min(selectionStart, finalValue.length),
-                        Math.min(selectionEnd, finalValue.length)
-                    );
+                    textarea.setSelectionRange(Math.min(selectionStart, finalValue.length), Math.min(selectionEnd, finalValue.length));
                 }
             }
 
-
-            // Lógica de Telefone Internacional
             populateCountrySelectors() {
-                const containers = [
-                    ...document.querySelectorAll('.passenger-phones-container'),
-                    document.getElementById('contractor-fields')
-                ];
-
+                const containers = [...document.querySelectorAll('.passenger-phones-container'), document.getElementById('contractor-fields')];
                 containers.forEach(container => {
                     if (!container) return;
-
                     const phoneInputGroups = container.querySelectorAll('.phone-input-group');
                     phoneInputGroups.forEach(group => {
-                        // Evita adicionar seletores duplicados
                         if (group.querySelector('.country-input-container')) return;
-
                         const phoneInput = group.querySelector('.phone-input');
                         if (!phoneInput) return;
-
                         const inputContainer = document.createElement('div');
                         inputContainer.className = 'country-input-container';
-
                         const input = document.createElement('input');
                         input.type = 'text';
                         input.className = 'country-input';
                         input.id = `country-select-${phoneInput.id}`;
-                        input.value = '+55'; // Brasil como padrão
+                        input.value = '+55';
                         input.placeholder = 'DDI';
                         input.setAttribute('data-country-code', 'BR');
-
                         const dropdown = document.createElement('div');
                         dropdown.className = 'country-dropdown';
                         dropdown.style.display = 'none';
-
                         inputContainer.appendChild(input);
                         inputContainer.appendChild(dropdown);
-
                         group.prepend(inputContainer);
-
                         this.setupCountrySearch(input, dropdown, phoneInput);
                     });
                 });
             }
 
-
             setupCountrySearch(input, dropdown, phoneInput) {
                 input.addEventListener('focus', () => this.showCountryDropdown(input, dropdown, ''));
                 input.addEventListener('input', (e) => this.showCountryDropdown(input, dropdown, e.target.value));
                 input.addEventListener('blur', () => setTimeout(() => dropdown.style.display = 'none', 200));
-
                 this.setupPhoneInputForCountry(phoneInput, 'BR');
             }
 
@@ -2144,11 +1333,7 @@
             filterCountries(query) {
                 if (!query) return this.countriesData;
                 const lowerQuery = query.toLowerCase().replace('+', '');
-                return this.countriesData.filter(country =>
-                    country.name.toLowerCase().includes(lowerQuery) ||
-                    country.dialCode.includes(lowerQuery) ||
-                    country.code.toLowerCase().includes(lowerQuery)
-                );
+                return this.countriesData.filter(country => country.name.toLowerCase().includes(lowerQuery) || country.dialCode.includes(lowerQuery) || country.code.toLowerCase().includes(lowerQuery));
             }
 
             selectCountry(input, country) {
@@ -2158,40 +1343,26 @@
 
             setupPhoneInputForCountry(phoneInput, countryCode) {
                 if (!phoneInput) return;
-
                 const currentValue = phoneInput.value;
-                // Limpa e reinscreve o evento para evitar múltiplos listeners
                 const newPhoneInput = phoneInput.cloneNode(true);
                 phoneInput.parentNode.replaceChild(newPhoneInput, phoneInput);
-
-                newPhoneInput.value = currentValue; 
-
-                // Configurações específicas por país
+                newPhoneInput.value = currentValue;
                 const countryConfig = this.getCountryPhoneConfig(countryCode);
                 newPhoneInput.maxLength = countryConfig.maxLength;
-
                 newPhoneInput.addEventListener('input', (e) => {
                     if (typeof libphonenumber === 'undefined') return;
-
-                    // Remove caracteres não numéricos exceto espaços, parênteses e hífens
                     let value = e.target.value.replace(/[^0-9\s\(\)\-]/g, '');
-
-                    // Aplica formatação usando libphonenumber
                     const asYouType = new libphonenumber.AsYouType(countryCode);
                     const formatted = asYouType.input(value);
-
-                    // Limita o comprimento baseado na configuração do país
                     if (formatted.length <= countryConfig.maxLength) {
                         e.target.value = formatted;
                     } else {
                         e.target.value = formatted.substring(0, countryConfig.maxLength);
                     }
                 });
-
                 newPhoneInput.addEventListener('blur', (e) => {
                     this.validateMobileNumber(e.target, countryCode);
                 });
-
                 this.updatePlaceholderForCountry(newPhoneInput, countryCode);
             }
 
@@ -2201,35 +1372,29 @@
                     phoneInput.title = '';
                     return;
                 };
-
                 try {
                     const phoneNumber = libphonenumber.parsePhoneNumberFromString(phoneInput.value, countryCode);
                     phoneInput.classList.remove('error', 'warning', 'valid');
-
                     if (phoneNumber && phoneNumber.isValid()) {
                         const type = phoneNumber.getType();
-
-                        // Aceita apenas números móveis
                         if (type === 'MOBILE') {
                             phoneInput.classList.add('valid');
                             phoneInput.title = 'Número de celular válido ✓';
                         } else if (type === 'FIXED_LINE_OR_MOBILE') {
-                            // Para números que podem ser fixos ou móveis, adiciona aviso
                             phoneInput.classList.add('warning');
-                            phoneInput.title = 'Verifique se este é um número de celular. Alguns países não distinguem entre fixo e móvel.';
+                            phoneInput.title = 'Verifique se este é um número de celular.';
                         } else {
-                            // Rejeita números fixos e outros tipos
                             phoneInput.classList.add('error');
-                            phoneInput.title = 'Este número não é um celular. Por favor, insira apenas números de celular.';
+                            phoneInput.title = 'Por favor, insira apenas números de celular.';
                         }
                     } else {
                         phoneInput.classList.add('error');
-                        phoneInput.title = 'Número de telefone inválido para este país.';
+                        phoneInput.title = 'Número inválido.';
                     }
                 } catch (error) {
                     phoneInput.classList.remove('warning', 'valid');
                     phoneInput.classList.add('error');
-                    phoneInput.title = 'Formato de número inválido.';
+                    phoneInput.title = 'Formato inválido.';
                 }
             }
 
@@ -2237,30 +1402,7 @@
                 const configs = {
                     'BR': { maxLength: 15, example: '(11) 99999-9999', minLength: 10 },
                     'US': { maxLength: 14, example: '(555) 123-4567', minLength: 10 },
-                    'CA': { maxLength: 14, example: '(416) 123-4567', minLength: 10 },
-                    'PT': { maxLength: 13, example: '912 345 678', minLength: 9 },
-                    'AR': { maxLength: 15, example: '11 1234-5678', minLength: 10 },
-                    'PY': { maxLength: 13, example: '0981 123456', minLength: 9 },
-                    'UY': { maxLength: 12, example: '094 123 456', minLength: 8 },
-                    'GB': { maxLength: 15, example: '07700 900123', minLength: 10 },
-                    'DE': { maxLength: 16, example: '0151 12345678', minLength: 10 },
-                    'FR': { maxLength: 14, example: '06 12 34 56 78', minLength: 10 },
-                    'IT': { maxLength: 15, example: '320 123 4567', minLength: 9 },
-                    'ES': { maxLength: 13, example: '612 34 56 78', minLength: 9 },
-                    'JP': { maxLength: 13, example: '090-1234-5678', minLength: 10 },
-                    'MX': { maxLength: 15, example: '55 1234 5678', minLength: 10 },
-                    'CL': { maxLength: 12, example: '9 8765 4321', minLength: 8 },
-                    'CO': { maxLength: 13, example: '300 123 4567', minLength: 10 },
-                    'PE': { maxLength: 12, example: '987 654 321', minLength: 9 },
-                    'VE': { maxLength: 13, example: '0412-1234567', minLength: 10 },
-                    'EC': { maxLength: 12, example: '099 123 4567', minLength: 9 },
-                    'BO': { maxLength: 11, example: '7 1234567', minLength: 8 },
-                    'AU': { maxLength: 12, example: '0412 345 678', minLength: 9 },
-                    'NZ': { maxLength: 12, example: '021 123 456', minLength: 8 },
-                    'ZA': { maxLength: 12, example: '082 123 4567', minLength: 9 },
-                    'IN': { maxLength: 13, example: '98765 43210', minLength: 10 },
-                    'CN': { maxLength: 13, example: '138 0013 8000', minLength: 11 },
-                    'RU': { maxLength: 16, example: '+7 912 345-67-89', minLength: 10 }
+                    'PT': { maxLength: 13, example: '912 345 678', minLength: 9 }
                 };
                 return configs[countryCode] || { maxLength: 15, example: 'Número de celular', minLength: 8 };
             }
@@ -2270,12 +1412,10 @@
                 phoneInput.placeholder = config.example;
             }
 
-
             toggleContractorFields() {
                 const contractorFields = document.getElementById('contractor-fields');
                 const toggleBtn = document.getElementById('toggle-contractor-btn');
                 const isHidden = !contractorFields.classList.contains('show');
-
                 if (isHidden) {
                     contractorFields.classList.add('show');
                     toggleBtn.textContent = 'Ocultar Campos';
@@ -2285,7 +1425,6 @@
                 }
             }
 
-            // Navegação
             showConfigScreen() {
                 this.hideAllScreens();
                 document.getElementById('config-screen').style.display = 'block';
@@ -2302,8 +1441,7 @@
                 this.hideAllScreens();
                 document.getElementById('voucher-form-screen').style.display = 'block';
                 this.loadAgencyOptions();
-                this.populateCountrySelectors(); // Adiciona o seletor de DDI ao campo do contratante
-
+                this.populateCountrySelectors();
                 if (voucherId) {
                     this.editingVoucherId = voucherId;
                     document.getElementById('voucher-form-title').innerHTML = '<i class="fas fa-edit"></i> Editar Voucher';
@@ -2321,11 +1459,9 @@
                 });
             }
 
-            // Configuração da Agência
             populateAgencySelect() {
                 const select = document.getElementById('agency-select-for-template');
                 if (!select) return;
-
                 const agencies = this.getAllAgencies();
                 select.innerHTML = '<option value="">Selecione uma agência...</option>';
                 agencies.forEach(agency => {
@@ -2335,7 +1471,6 @@
                     select.appendChild(option);
                 });
                 select.innerHTML += '<option value="new">-- Adicionar Nova Agência --</option>';
-
                 select.addEventListener('change', (e) => {
                     const newAgencyGroup = document.getElementById('new-agency-name-group');
                     const newAgencyInput = document.getElementById('new-agency-name');
@@ -2355,17 +1490,14 @@
                 const agencySelect = document.getElementById('agency-select-for-template');
                 const selectedAgencyId = agencySelect.value;
                 const templateFile = document.getElementById('pdf-template').files[0];
-
                 if (!selectedAgencyId) {
                     this.showErrorMessage('Por favor, selecione uma agência ou a opção para adicionar uma nova.');
                     return;
                 }
-
                 if (!templateFile) {
                     this.showErrorMessage('Por favor, selecione um arquivo de template PDF.');
                     return;
                 }
-
                 let agencyIdentifier;
                 if (selectedAgencyId === 'new') {
                     agencyIdentifier = document.getElementById('new-agency-name').value.trim();
@@ -2376,7 +1508,6 @@
                 } else {
                     agencyIdentifier = selectedAgencyId;
                 }
-
                 this.saveAgencyWithTemplate(agencyIdentifier, templateFile);
             }
 
@@ -2384,29 +1515,18 @@
                 try {
                     const arrayBuffer = await templateFile.arrayBuffer();
                     const base64String = this.arrayBufferToBase64(arrayBuffer);
-                    const templateData = {
-                        name: templateFile.name,
-                        data: base64String,
-                    };
+                    const templateData = { name: templateFile.name, data: base64String };
                     const agencies = this.getAllAgencies();
-
                     let agencyToUpdate = agencies.find(a => a.id === agencyIdentifier || a.name === agencyIdentifier);
-
                     if (agencyToUpdate) {
                         agencyToUpdate.templates.push(templateData);
                         this.showSuccessMessage(`Template adicionado à agência "${agencyToUpdate.name}"!`);
                     } else {
-                        const newAgency = {
-                            id: this.generateId(),
-                            name: agencyIdentifier,
-                            templates: [templateData],
-                        };
+                        const newAgency = { id: this.generateId(), name: agencyIdentifier, templates: [templateData] };
                         agencies.push(newAgency);
                         this.showSuccessMessage(`Agência "${newAgency.name}" criada com sucesso!`);
                     }
-
                     localStorage.setItem('agencies', JSON.stringify(agencies));
-
                     document.getElementById('agency-config-form').reset();
                     document.getElementById('pdf-template-status').innerHTML = '';
                     document.getElementById('pdf-template-status').className = 'template-status';
@@ -2416,10 +1536,8 @@
                     this.loadAgencyOptions();
                 } catch (error) {
                     this.showErrorMessage('Erro ao salvar agência e template.');
-                    console.error('Save error:', error);
                 }
             }
-
 
             getAllAgencies() {
                 const agencies = localStorage.getItem('agencies');
@@ -2468,10 +1586,7 @@
                 const agencies = this.getAllAgencies();
                 const agency = agencies.find(a => a.id === agencyId);
                 if (agency && agency.templates[templateIndex]) {
-                    this.currentTemplate = {
-                        agency,
-                        template: agency.templates[templateIndex]
-                    };
+                    this.currentTemplate = { agency, template: agency.templates[templateIndex] };
                 }
             }
 
@@ -2491,9 +1606,7 @@
                 agenciesList.innerHTML = agencies.map(agency => `
                 <div class="agency-item">
                     <div class="agency-item-header">
-                         <div class="agency-info">
-                              <div class="agency-name">${agency.name}</div>
-                        </div>
+                         <div class="agency-info"><div class="agency-name">${agency.name}</div></div>
                         <div class="agency-actions">
                             <button class="btn btn-danger btn-small remove-agency-btn" data-agency-id="${agency.id}">
                                 <i class="fa fa-trash"></i> Remover Agência
@@ -2508,26 +1621,14 @@
                             <button class="remove-template-btn" data-agency-id="${agency.id}" data-template-index="${index}" title="Remover este template">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </div>
-                        `).join('')
-                        : '<p class="empty-agencies" style="padding: 0.5rem 0; text-align: left;">Nenhum template adicionado.</p>'
-                    }
+                        </div>`).join('') : '<p class="empty-agencies" style="padding: 0.5rem 0; text-align: left;">Nenhum template adicionado.</p>'}
                     </div>
                 </div>`).join('');
-
                 agenciesList.querySelectorAll('.remove-agency-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        this.removeAgency(e.currentTarget.getAttribute('data-agency-id'));
-                    });
+                    button.addEventListener('click', (e) => this.removeAgency(e.currentTarget.getAttribute('data-agency-id')));
                 });
-
                 agenciesList.querySelectorAll('.remove-template-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        this.removeTemplate(
-                            e.currentTarget.getAttribute('data-agency-id'),
-                            parseInt(e.currentTarget.getAttribute('data-template-index'), 10)
-                        );
-                    });
+                    button.addEventListener('click', (e) => this.removeTemplate(e.currentTarget.getAttribute('data-agency-id'), parseInt(e.currentTarget.getAttribute('data-template-index'), 10)));
                 });
             }
 
@@ -2554,19 +1655,16 @@
                         localStorage.setItem('agencies', JSON.stringify(agencies));
                         this.showSuccessMessage('Template removido com sucesso!');
                         this.loadAgenciesList();
-                        this.populateAgencySelect(); // Refresh select
-                        this.loadAgencyOptions(); // Refresh voucher form select
+                        this.populateAgencySelect();
+                        this.loadAgencyOptions();
                     } else {
                         this.showErrorMessage('Não foi possível encontrar o template para remover.');
                     }
                 } catch (error) {
                     this.showErrorMessage('Erro ao remover o template.');
-                    console.error('Remove template error:', error);
                 }
             }
 
-
-            // CRUD de Vouchers
             getAllVouchers() {
                 const vouchers = localStorage.getItem('vouchers');
                 return vouchers ? JSON.parse(vouchers).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
@@ -2575,16 +1673,12 @@
             saveVoucher() {
                 const voucherData = this.getVoucherFormData();
                 if (!this.validateVoucherData(voucherData)) return;
-
                 this.saveAutocompleteData(voucherData);
                 const vouchers = this.getAllVouchers();
                 if (this.editingVoucherId) {
                     const index = vouchers.findIndex(v => v.id === this.editingVoucherId);
                     if (index !== -1) {
-                        vouchers[index] = { ...vouchers[index],
-                            ...voucherData,
-                            updatedAt: new Date().toISOString()
-                        };
+                        vouchers[index] = { ...vouchers[index], ...voucherData, updatedAt: new Date().toISOString() };
                     }
                 } else {
                     voucherData.id = this.generateId();
@@ -2602,9 +1696,7 @@
                     date: this.formatDateDDMMYY(row.querySelector('input[name="date"]').value),
                     time: row.querySelector('input[name="time"]').value
                 })).filter(d => d.destination);
-
                 const passengers = Array.from(document.querySelectorAll('.passenger-row input[name="passenger"]')).map(input => input.value).filter(p => p);
-
                 return {
                     selectedAgency: document.getElementById('selected-agency').value,
                     selectedTemplate: document.getElementById('selected-template').value,
@@ -2635,8 +1727,6 @@
             validateVoucherData(data) {
                 if (!data.selectedAgency) return this.showErrorMessage('Selecione uma agência!');
                 if (!data.selectedTemplate) return this.showErrorMessage('Selecione um template!');
-                // Contractor data is not mandatory anymore
-                // if (!data.nome_contratante) return this.showErrorMessage('Nome do contratante é obrigatório!');
                 if (data.destinations.length === 0) return this.showErrorMessage('Pelo menos um destino deve ser informado!');
                 return true;
             }
@@ -2661,15 +1751,12 @@
                         }
                     }, 100);
                 }
-
                 this.clearDestinations();
                 (voucher.destinations || []).forEach(d => this.addDestination(d));
                 if (document.querySelectorAll('.destination-row').length === 0) this.addDestination();
-
                 this.clearPassengers();
                 (voucher.passengers || []).forEach(p => this.addPassenger(p));
                 if (document.querySelectorAll('.passenger-row').length === 0) this.addPassenger();
-
                 document.getElementById('local_embarque').value = voucher.local_embarque || '';
                 document.getElementById('qt_adulto').value = voucher.qt_adulto || 0;
                 document.getElementById('qt_crianca').value = voucher.qt_crianca || 0;
@@ -2680,48 +1767,32 @@
                 document.getElementById('data_contrato').value = this.convertDateToISO(voucher.data_contrato) || '';
                 document.getElementById('nome_contratante').value = voucher.nome_contratante || '';
                 document.getElementById('email_contratante').value = voucher.email_contratante || '';
-
-                // Carregar estado dos checkboxes (default para true se não existir)
                 document.getElementById('include-contractor-date').checked = voucher.includeContractorDate !== false;
                 document.getElementById('include-contractor-name').checked = voucher.includeContractorName !== false;
                 document.getElementById('include-contractor-email').checked = voucher.includeContractorEmail !== false;
                 document.getElementById('include-contractor-contact').checked = voucher.includeContractorContact !== false;
-
-
-                // Load phone numbers correctly after fields are created
-                this.addPassengerPhones(); // This will just create the structure
-
+                this.addPassengerPhones();
                 setTimeout(() => {
                     this.populatePhoneField('contato_01', voucher.contato_01);
                     this.populatePhoneField('contato_02', voucher.contato_02);
                     this.populatePhoneField('contato_contratante', voucher.contato_contratante);
                 }, 0);
-
-
-                // Show contractor fields if they have data
                 if (voucher.nome_contratante) {
                     const contractorFields = document.getElementById('contractor-fields');
                     if (!contractorFields.classList.contains('show')) {
                         this.toggleContractorFields();
                     }
                 }
-
                 this.calculateTotalPassengers();
                 this.calculateRemainingAmount();
             }
 
             duplicateVoucher(voucherId) {
                 const voucherToDuplicate = this.getAllVouchers().find(v => String(v.id) === String(voucherId));
-                if (!voucherToDuplicate) {
-                    return this.showErrorMessage('Voucher não encontrado para duplicação.');
-                }
-
+                if (!voucherToDuplicate) return this.showErrorMessage('Voucher não encontrado para duplicação.');
                 const duplicatedVoucherData = JSON.parse(JSON.stringify(voucherToDuplicate));
-
-                // Set as a new voucher
                 this.editingVoucherId = null;
                 this.showVoucherFormScreen();
-
                 setTimeout(() => {
                     document.getElementById('voucher-form-title').innerHTML = `<i class="fas fa-copy"></i> Duplicando Voucher`;
                     this._populateFormWithData(duplicatedVoucherData);
@@ -2729,36 +1800,21 @@
             }
 
             deleteVoucher(voucherId) {
-                if (!voucherId) {
-                    this.showErrorMessage('ID do voucher não encontrado!');
-                    return;
-                }
-
+                if (!voucherId) return this.showErrorMessage('ID do voucher não encontrado!');
                 if (confirm('Tem certeza que deseja excluir este voucher?')) {
                     const vouchers = this.getAllVouchers();
-                    const initialCount = vouchers.length;
-
-                    // Correção: Garante que os IDs sejam comparados como strings para evitar erros de tipo.
                     const filteredVouchers = vouchers.filter(v => String(v.id) !== String(voucherId));
-
-                    if (filteredVouchers.length === initialCount) {
-                        this.showErrorMessage('Voucher não encontrado para exclusão!');
-                        return;
-                    }
-
+                    if (filteredVouchers.length === vouchers.length) return this.showErrorMessage('Voucher não encontrado para exclusão!');
                     localStorage.setItem('vouchers', JSON.stringify(filteredVouchers));
                     this.loadVouchersList();
                     this.showSuccessMessage('Voucher excluído com sucesso!');
                 }
             }
 
-            // Formulário de Voucher
             resetVoucherForm() {
                 document.getElementById('voucher-form').reset();
                 const today = new Date();
-                const todayISO = today.getFullYear() + '-' +
-                    String(today.getMonth() + 1).padStart(2, '0') + '-' +
-                    String(today.getDate()).padStart(2, '0');
+                const todayISO = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
                 document.getElementById('data_contrato').value = todayISO;
                 this.clearDestinations();
                 this.clearPassengers();
@@ -2771,33 +1827,22 @@
                 if (contractorFields.classList.contains('show')) {
                     this.toggleContractorFields();
                 }
-                // Resetar checkboxes
                 document.getElementById('include-contractor-date').checked = true;
                 document.getElementById('include-contractor-name').checked = true;
                 document.getElementById('include-contractor-email').checked = true;
                 document.getElementById('include-contractor-contact').checked = true;
                 this.populatePhoneField('contato_contratante', '+55 ');
-
             }
 
             addDestination(dest = {}) {
                 const container = document.getElementById('destinations-container');
-                if (container.children.length >= 7) {
-                    this.showErrorMessage("O limite de 7 destinos foi atingido.");
-                    return;
-                }
+                if (container.children.length >= 7) return this.showErrorMessage("O limite de 7 destinos foi atingido.");
                 const row = document.createElement('div');
                 row.className = 'destination-row';
                 row.innerHTML = `
-                <div class="form-group">
-                    <input type="text" name="destination" class="form-input autocomplete-input" data-field="destination" value="${dest.destination || ''}" placeholder="Destino">
-                </div>
-                <div class="form-group">
-                    <input type="date" name="date" class="form-input" value="${this.convertDateToISO(dest.date) || ''}" placeholder="Data">
-                </div>
-                <div class="form-group">
-                    <input type="time" name="time" class="form-input" value="${dest.time || ''}" placeholder="Horário">
-                </div>
+                <div class="form-group"><input type="text" name="destination" class="form-input autocomplete-input" data-field="destination" value="${dest.destination || ''}" placeholder="Destino"></div>
+                <div class="form-group"><input type="date" name="date" class="form-input" value="${this.convertDateToISO(dest.date) || ''}" placeholder="Data"></div>
+                <div class="form-group"><input type="time" name="time" class="form-input" value="${dest.time || ''}" placeholder="Horário"></div>
                 <button type="button" class="remove-destination-btn" title="Remover"><i class="fas fa-trash"></i></button>`;
                 container.appendChild(row);
                 row.querySelector('.remove-destination-btn').addEventListener('click', () => {
@@ -2806,29 +1851,17 @@
                 this.setupAutocompleteForField(row.querySelector('.autocomplete-input'));
             }
 
-            clearDestinations() {
-                document.getElementById('destinations-container').innerHTML = '';
-            }
+            clearDestinations() { document.getElementById('destinations-container').innerHTML = ''; }
 
             addPassenger(name = '') {
                 const container = document.getElementById('passengers-container');
-                if (container.children.length >= 10) {
-                    this.showErrorMessage("O limite de 10 passageiros foi atingido.");
-                    return;
-                }
+                if (container.children.length >= 10) return this.showErrorMessage("O limite de 10 passageiros foi atingido.");
                 const count = container.children.length + 1;
                 const row = document.createElement('div');
                 row.className = 'passenger-row';
-                row.innerHTML = `
-                <label>PAX ${count}</label>
-                <input type="text" name="passenger" class="form-input autocomplete-input" data-field="passenger" value="${name || ''}">
-                <button type="button" class="btn btn-danger btn-sm remove-passenger-btn" title="Remover passageiro">
-                    <i class="fas fa-trash"></i>
-                </button>`;
+                row.innerHTML = `<label>PAX ${count}</label><input type="text" name="passenger" class="form-input autocomplete-input" data-field="passenger" value="${name || ''}"><button type="button" class="btn btn-danger btn-sm remove-passenger-btn" title="Remover passageiro"><i class="fas fa-trash"></i></button>`;
                 container.appendChild(row);
                 this.setupAutocompleteForField(row.querySelector('.autocomplete-input'));
-
-                // Adicionar event listener para o botão de remover
                 const removeBtn = row.querySelector('.remove-passenger-btn');
                 removeBtn.addEventListener('click', () => this.removePassenger(row));
             }
@@ -2843,9 +1876,7 @@
                 }
             }
 
-            clearPassengers() {
-                document.getElementById('passengers-container').innerHTML = '';
-            }
+            clearPassengers() { document.getElementById('passengers-container').innerHTML = ''; }
 
             updatePassengerLabels() {
                 const container = document.getElementById('passengers-container');
@@ -2858,22 +1889,16 @@
 
             addPassengerPhones() {
                 const container = document.querySelector('.passenger-phones-container');
-                container.innerHTML = ''; // Limpa antes de adicionar
-
+                container.innerHTML = '';
                 for (let i = 1; i <= 2; i++) {
                     const unit = document.createElement('div');
                     unit.className = 'passenger-phone-unit';
-                    unit.innerHTML = `
-                        <label for="contato_0${i}">Contato Passageiro ${i}</label>
-                        <div class="phone-input-group">
-                            <input type="tel" id="contato_0${i}" class="form-input phone-input" value="">
-                        </div>`;
+                    unit.innerHTML = `<label for="contato_0${i}">Contato Passageiro ${i}</label><div class="phone-input-group"><input type="tel" id="contato_0${i}" class="form-input phone-input" value=""></div>`;
                     container.appendChild(unit);
                 }
                 this.populateCountrySelectors();
             }
 
-            // Cálculos
             calculateTotalPassengers() {
                 const adults = parseInt(document.getElementById('qt_adulto').value) || 0;
                 const children = parseInt(document.getElementById('qt_crianca').value) || 0;
@@ -2892,7 +1917,6 @@
                 document.querySelectorAll('.money-input').forEach(input => input.addEventListener('input', () => this.calculateRemainingAmount()));
             }
 
-            // Autocomplete
             setupAutocomplete() {
                 document.querySelectorAll('.autocomplete-input').forEach(input => this.setupAutocompleteForField(input));
             }
@@ -2903,6 +1927,7 @@
                 input.addEventListener('blur', () => setTimeout(() => this.hideAutocompleteSuggestions(), 200));
             }
 
+            // Otimização de Performance para Autocomplete com requestAnimationFrame
             showAutocompleteSuggestions(input, field) {
                 const value = input.value.toLowerCase();
                 const suggestions = (this.autocompleteData[field] || []).filter(s => s.toLowerCase().includes(value)).slice(0, 5);
@@ -2915,17 +1940,21 @@
 
             displayAutocompleteSuggestions(input, suggestions) {
                 const container = document.getElementById('autocomplete-suggestions');
-                const rect = input.getBoundingClientRect();
-                container.style.left = `${rect.left}px`;
-                container.style.top = `${rect.bottom + window.scrollY}px`;
-                container.style.width = `${rect.width}px`;
-                container.style.display = 'block';
-                container.innerHTML = suggestions.map(s => `<div class="autocomplete-suggestion">${s}</div>`).join('');
-                container.querySelectorAll('.autocomplete-suggestion').forEach(suggestion => {
-                    suggestion.addEventListener('click', () => {
-                        input.value = suggestion.textContent;
-                        this.hideAutocompleteSuggestions();
-                        input.focus();
+                
+                // Otimização: renderização no próximo frame
+                requestAnimationFrame(() => {
+                    const rect = input.getBoundingClientRect();
+                    container.style.left = `${rect.left}px`;
+                    container.style.top = `${rect.bottom + window.scrollY}px`;
+                    container.style.width = `${rect.width}px`;
+                    container.style.display = 'block';
+                    container.innerHTML = suggestions.map(s => `<div class="autocomplete-suggestion">${s}</div>`).join('');
+                    container.querySelectorAll('.autocomplete-suggestion').forEach(suggestion => {
+                        suggestion.addEventListener('click', () => {
+                            input.value = suggestion.textContent;
+                            this.hideAutocompleteSuggestions();
+                            input.focus();
+                        });
                     });
                 });
             }
@@ -2939,7 +1968,7 @@
                 this.addToAutocomplete('local_embarque', voucherData.local_embarque);
                 (voucherData.passengers || []).forEach(p => this.addToAutocomplete('passenger', p));
                 this.addToAutocomplete('nome_contratante', voucherData.nome_contratante);
-                // Adicione mais campos se desejar
+                this.addToAutocomplete('email_contratante', voucherData.email_contratante);
                 localStorage.setItem('autocompleteData', JSON.stringify(this.autocompleteData));
             }
 
@@ -2959,12 +1988,10 @@
                 return data ? JSON.parse(data) : {};
             }
 
-            // PDF
             async generatePDF() {
                 try {
                     const voucherData = this.getVoucherFormData();
                     if (!this.validateVoucherData(voucherData)) return;
-
                     await this.createPDF(voucherData);
                 } catch (error) {
                     this.showErrorMessage('Erro ao gerar PDF: ' + error.message);
@@ -2979,34 +2006,19 @@
             }
 
             async createPDF(voucherData) {
-                if (typeof PDFLib === 'undefined') {
-                    return this.showErrorMessage('Biblioteca PDF não carregada.');
-                }
-
+                if (typeof PDFLib === 'undefined') return this.showErrorMessage('Biblioteca PDF não carregada.');
                 try {
                     const templateBytes = await this.loadSelectedTemplate(voucherData.selectedTemplate);
-                    if (!templateBytes) {
-                        return this.showErrorMessage('Template PDF não encontrado.');
-                    }
-
-                    const {
-                        PDFDocument
-                    } = PDFLib;
+                    if (!templateBytes) return this.showErrorMessage('Template PDF não encontrado.');
+                    const { PDFDocument } = PDFLib;
                     const pdfDoc = await PDFDocument.load(templateBytes);
                     const form = pdfDoc.getForm();
-
                     this.fillPDFFields(form, voucherData);
-
-                    form.flatten(); // Torna os campos não editáveis
-
+                    form.flatten();
                     const pdfBytes = await pdfDoc.save();
-
-                    const blob = new Blob([pdfBytes], {
-                        type: 'application/pdf'
-                    });
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                     const safeName = (voucherData.nome_contratante || 'voucher').replace(/[^a-zA-Z0-9]/g, '_');
                     const fileName = `voucher_${safeName}_${new Date().toISOString().split('T')[0]}.pdf`;
-
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
                     link.download = fileName;
@@ -3015,31 +2027,20 @@
                     document.body.removeChild(link);
                     URL.revokeObjectURL(link.href);
                     this.showSuccessMessage('PDF baixado com sucesso!');
-
                 } catch (error) {
-                    console.error("Erro detalhado ao criar PDF:", error);
-                    this.showErrorMessage('Erro ao criar o PDF. Verifique o console para detalhes.');
+                    this.showErrorMessage('Erro ao criar o PDF.');
                 }
             }
 
             fillPDFFields(form, voucherData) {
                 const setField = (fieldName, value) => {
                     try {
-                        // Garante que não tentemos preencher campos com valores vazios ou nulos
                         if (value !== undefined && value !== null && String(value).trim() !== '') {
                             const field = form.getField(fieldName);
                             field.setText(String(value));
                         }
-                    } catch (e) {
-                        // Se o campo não for encontrado no PDF, um aviso será exibido no console do navegador.
-                        // Isso ajuda a diagnosticar problemas com o template.
-                        console.warn(`Campo do PDF não encontrado: '${fieldName}'. Verifique se o nome está correto no seu template.`);
-                    }
+                    } catch (e) { }
                 };
-
-                // --- Preenchimento dos Campos (Conforme solicitado) ---
-
-                // Roteiro
                 (voucherData.destinations || []).forEach((dest, i) => {
                     if (i >= 7) return;
                     const num = String(i + 1).padStart(2, '0');
@@ -3047,46 +2048,26 @@
                     setField(`data_${num}`, dest.date);
                     setField(`horario_${num}`, dest.time);
                 });
-
-                // Lista de Passageiros
                 (voucherData.passengers || []).forEach((p, i) => {
                     if (i >= 10) return;
                     const num = String(i + 1).padStart(2, '0');
                     setField(`passageiro_${num}`, p);
                 });
-
-                // Dados da Viagem
                 setField('local_embarque', voucherData.local_embarque);
                 setField('observacao', voucherData.observacao);
-
-                // Quantitativos
                 setField('qt_adulto', voucherData.qt_adulto);
                 setField('qt_crianca', voucherData.qt_crianca);
                 setField('qt_colo', voucherData.qt_colo);
                 setField('total_passageiros', voucherData.total_passageiros);
-
-                // Contato dos Passageiros
                 setField('contato_01', voucherData.contato_01);
                 setField('contato_02', voucherData.contato_02);
-
-                // Financeiro
                 setField('total_a_pagar', `R$ ${parseFloat(voucherData.total_a_pagar || 0).toFixed(2)}`);
                 setField('pre_reserva', `R$ ${parseFloat(voucherData.pre_reserva || 0).toFixed(2)}`);
                 setField('falta_pagar', `R$ ${parseFloat(voucherData.falta_pagar || 0).toFixed(2)}`);
-
-                // Lógica para preenchimento condicional dos DADOS DO CONTRATANTE
-                if (voucherData.includeContractorDate) {
-                    setField('data_contrato', `Data do Contrato: ${voucherData.data_contrato}`);
-                }
-                if (voucherData.includeContractorName) {
-                    setField('nome_contratante', `Contratante: ${voucherData.nome_contratante}`);
-                }
-                if (voucherData.includeContractorEmail) {
-                    setField('email_contratante', `E-mail: ${voucherData.email_contratante}`);
-                }
-                if (voucherData.includeContractorContact) {
-                    setField('contato_contratante', `Contato: ${voucherData.contato_contratante}`);
-                }
+                if (voucherData.includeContractorDate) setField('data_contrato', `Data do Contrato: ${voucherData.data_contrato}`);
+                if (voucherData.includeContractorName) setField('nome_contratante', `Contratante: ${voucherData.nome_contratante}`);
+                if (voucherData.includeContractorEmail) setField('email_contratante', `E-mail: ${voucherData.email_contratante}`);
+                if (voucherData.includeContractorContact) setField('contato_contratante', `Contato: ${voucherData.contato_contratante}`);
             }
 
             async loadSelectedTemplate(templateId) {
@@ -3097,15 +2078,10 @@
                     const agency = agencies.find(a => a.id === agencyId);
                     if (agency && agency.templates && agency.templates[templateIndex]) {
                         const base64String = agency.templates[templateIndex].data;
-                        if (base64String && typeof base64String === 'string') {
-                            return this.base64ToUint8Array(base64String);
-                        }
+                        if (base64String) return this.base64ToUint8Array(base64String);
                     }
                     return null;
-                } catch (error) {
-                    console.error('Erro ao carregar template:', error);
-                    return null;
-                }
+                } catch (error) { return null; }
             }
 
             async handlePDFTemplateUpload(e) {
@@ -3124,15 +2100,10 @@
                 }
             }
 
-
-            // Utilitários
             arrayBufferToBase64(buffer) {
                 let binary = '';
                 const bytes = new Uint8Array(buffer);
-                const len = bytes.byteLength;
-                for (let i = 0; i < len; i++) {
-                    binary += String.fromCharCode(bytes[i]);
-                }
+                for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
                 return window.btoa(binary);
             }
 
@@ -3140,45 +2111,35 @@
                 const binary_string = window.atob(base64);
                 const len = binary_string.length;
                 const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binary_string.charCodeAt(i);
-                }
+                for (let i = 0; i < len; i++) bytes[i] = binary_string.charCodeAt(i);
                 return bytes;
             }
 
-            generateId() {
-                return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-            }
+            generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
 
             formatDateTimeDDMMYY(isoString) {
                 if (!isoString) return '';
                 try {
                     const date = new Date(isoString);
-                    if (isNaN(date.getTime())) return isoString; // Retorna string original se for inválida
-
+                    if (isNaN(date.getTime())) return isoString;
                     const day = String(date.getDate()).padStart(2, '0');
                     const month = String(date.getMonth() + 1).padStart(2, '0');
                     const year = date.getFullYear();
                     const hours = String(date.getHours()).padStart(2, '0');
                     const minutes = String(date.getMinutes()).padStart(2, '0');
-
                     return `${day}/${month}/${year} às ${hours}:${minutes}`;
-                } catch {
-                    return isoString; // Em caso de erro, retorna a string original
-                }
+                } catch { return isoString; }
             }
 
             formatDateDDMMYY(dateString) {
                 if (!dateString || !dateString.includes('-')) return dateString || '';
                 try {
-                    const date = new Date(dateString + 'T00:00:00'); // Garante que seja interpretado como data local
+                    const date = new Date(dateString + 'T00:00:00');
                     const day = String(date.getDate()).padStart(2, '0');
                     const month = String(date.getMonth() + 1).padStart(2, '0');
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
-                } catch {
-                    return dateString;
-                }
+                } catch { return dateString; }
             }
 
             convertDateToISO(dateString) {
@@ -3202,23 +2163,14 @@
                 }
                 container.style.display = 'block';
                 emptyState.style.display = 'none';
-
                 container.innerHTML = vouchers.map(v => this.createVoucherListItem(v)).join('');
-
-                container.querySelectorAll('.edit-voucher-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    this.showVoucherFormScreen(e.currentTarget.closest('.voucher-item').dataset.voucherId);
-                }));
+                container.querySelectorAll('.edit-voucher-btn').forEach(btn => btn.addEventListener('click', (e) => this.showVoucherFormScreen(e.currentTarget.closest('.voucher-item').dataset.voucherId)));
                 container.querySelectorAll('.delete-voucher-btn').forEach(btn => btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const voucherId = e.currentTarget.closest('.voucher-item').dataset.voucherId;
-                    this.deleteVoucher(voucherId);
+                    this.deleteVoucher(e.currentTarget.closest('.voucher-item').dataset.voucherId);
                 }));
-                container.querySelectorAll('.generate-pdf-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    this.generatePDFFromVoucher(e.currentTarget.closest('.voucher-item').dataset.voucherId);
-                }));
-                container.querySelectorAll('.duplicate-voucher-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                    this.duplicateVoucher(e.currentTarget.closest('.voucher-item').dataset.voucherId);
-                }));
+                container.querySelectorAll('.generate-pdf-btn').forEach(btn => btn.addEventListener('click', (e) => this.generatePDFFromVoucher(e.currentTarget.closest('.voucher-item').dataset.voucherId)));
+                container.querySelectorAll('.duplicate-voucher-btn').forEach(btn => btn.addEventListener('click', (e) => this.duplicateVoucher(e.currentTarget.closest('.voucher-item').dataset.voucherId)));
             }
 
             createVoucherListItem(voucher) {
@@ -3227,10 +2179,7 @@
                 return `
                 <div class="voucher-item" data-voucher-id="${voucher.id}">
                     <div class="voucher-header">
-                        <div>
-                            <div class="voucher-title">${voucher.nome_contratante}</div>
-                            <div class="voucher-date">Criado em ${this.formatDateTimeDDMMYY(voucher.createdAt)}</div>
-                        </div>
+                        <div><div class="voucher-title">${voucher.nome_contratante}</div><div class="voucher-date">Criado em ${this.formatDateTimeDDMMYY(voucher.createdAt)}</div></div>
                         <div class="voucher-actions">
                             <button class="btn btn-secondary edit-voucher-btn"><i class="fas fa-edit"></i> Editar</button>
                             <button class="btn btn-info duplicate-voucher-btn"><i class="fas fa-copy"></i> Duplicar</button>
@@ -3239,27 +2188,14 @@
                         </div>
                     </div>
                     <div class="voucher-info">
-                        <div class="voucher-info-item">
-                            <div class="voucher-info-label">Destinos</div>
-                            <div class="voucher-info-value">${destinations}</div>
-                        </div>
-                        <div class="voucher-info-item">
-                            <div class="voucher-info-label">Passageiros</div>
-                            <div class="voucher-info-value">${totalPassengers}</div>
-                        </div>
-                        <div class="voucher-info-item">
-                            <div class="voucher-info-label">Total</div>
-                            <div class="voucher-info-value">R$ ${(voucher.total_a_pagar || 0).toFixed(2)}</div>
-                        </div>
-                        <div class="voucher-info-item">
-                            <div class="voucher-info-label">Falta Pagar</div>
-                            <div class="voucher-info-value">R$ ${(voucher.falta_pagar || 0).toFixed(2)}</div>
-                        </div>
+                        <div class="voucher-info-item"><div class="voucher-info-label">Destinos</div><div class="voucher-info-value">${destinations}</div></div>
+                        <div class="voucher-info-item"><div class="voucher-info-label">Passageiros</div><div class="voucher-info-value">${totalPassengers}</div></div>
+                        <div class="voucher-info-item"><div class="voucher-info-label">Total</div><div class="voucher-info-value">R$ ${(voucher.total_a_pagar || 0).toFixed(2)}</div></div>
+                        <div class="voucher-info-item"><div class="voucher-info-label">Falta Pagar</div><div class="voucher-info-value">R$ ${(voucher.falta_pagar || 0).toFixed(2)}</div></div>
                     </div>
                 </div>`;
             }
 
-            // Mensagens
             showMessage(message, type = 'success') {
                 const el = document.createElement('div');
                 el.className = `message message-${type}`;
@@ -3270,13 +2206,8 @@
                     setTimeout(() => el.remove(), 500);
                 }, 3000);
             }
-            showSuccessMessage(message) {
-                this.showMessage(message, 'success');
-            }
-            showErrorMessage(message) {
-                this.showMessage(message, 'error');
-                return false;
-            }
+            showSuccessMessage(message) { this.showMessage(message, 'success'); }
+            showErrorMessage(message) { this.showMessage(message, 'error'); return false; }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -3286,4 +2217,3 @@
 </body>
 
 </html>
-
